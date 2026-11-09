@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>¡Pedido Confirmado! | CloudStore</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="css/theme.css">
+  <link rel="stylesheet" href="css/styles.css">
+  <style>
+    @media print {
+      body { background: #fff !important; color: #000 !important; }
+      .no-print, .cs-navbar, .cs-footer, .btn { display: none !important; }
+      .card { border: 1px solid #ccc !important; background: #fff !important; color: #000 !important; }
+      .text-white, .text-secondary { color: #000 !important; }
+      .table-dark-custom { background: #fff !important; color: #000 !important; }
+      .table-dark-custom th, .table-dark-custom td { color: #000 !important; border-bottom: 1px solid #ddd !important; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- Navegación Principal -->
+  <nav class="navbar navbar-expand-lg cs-navbar sticky-top">
+    <div class="container">
+      <a class="navbar-brand d-flex align-items-center gap-2" href="index.html">
+        <i class="bi bi-cloud-check-fill text-primary fs-3"></i>
+        <span class="brand-gradient fs-4">CloudStore</span>
+        <span class="badge brand-badge text-uppercase ms-1">Serverless</span>
+      </a>
+
+      <div class="ms-auto d-flex align-items-center gap-2">
+        <a href="index.html" class="btn btn-outline-custom btn-sm rounded-pill px-3">
+          <i class="bi bi-house me-1"></i> Ir al Inicio
+        </a>
+      </div>
+    </div>
+  </nav>
+
+  <!-- Contenido de Éxito -->
+  <main class="py-5">
+    <div class="container">
+      
+      <!-- Spinner mientras consulta -->
+      <div id="orderLoading" class="text-center py-5">
+        <div class="spinner-border text-primary me-2"></div>
+        <p class="text-secondary mt-2">Cargando comprobante del pedido...</p>
+      </div>
+
+      <!-- Detalle del Pedido Confirmado -->
+      <div id="orderSuccessContent" style="display: none;">
+        <div class="row justify-content-center">
+          <div class="col-lg-8">
+            
+            <!-- Encabezado de Celebración -->
+            <div class="text-center mb-5">
+              <div class="d-inline-flex p-3 rounded-circle bg-success bg-opacity-10 text-success mb-3 shadow-sm">
+                <i class="bi bi-check2-circle display-4"></i>
+              </div>
+              <h1 class="display-6 fw-bold text-dark mb-2">¡Gracias por tu pedido!</h1>
+              <p class="lead text-secondary mb-3">Tu orden ha sido registrada correctamente en el sistema.</p>
+              
+              <div class="d-inline-flex align-items-center gap-2 px-3 py-1.5 rounded-pill bg-white border border-subtle shadow-sm">
+                <span class="small text-secondary">Número de Orden:</span>
+                <span class="font-monospace fw-bold text-primary" id="orderNumberDisplay">CS-2026-XXXX</span>
+              </div>
+            </div>
+
+            <!-- Call to Action Principal: WhatsApp -->
+            <div class="card p-4 rounded-4 mb-4 shadow" style="background: linear-gradient(135deg, #0d2818 0%, #111827 100%); border: 1px solid rgba(37, 211, 102, 0.4);">
+              <div class="row align-items-center">
+                <div class="col-md-8 mb-3 mb-md-0">
+                  <div class="d-flex align-items-center gap-2 mb-1">
+                    <i class="bi bi-whatsapp fs-4 text-success"></i>
+                    <h5 class="fw-bold text-white mb-0">Paso Final: Enviar a WhatsApp</h5>
+                  </div>
+                  <p class="text-secondary small mb-0" style="color: #cbd5e1 !important;">
+                    Haz clic en el botón para enviar el resumen del pedido a nuestro canal oficial de atención y coordinar el pago contra entrega o transferencia.
+                  </p>
+                </div>
+                <div class="col-md-4 text-md-end">
+                  <button type="button" id="btnOpenWhatsApp" class="btn btn-whatsapp btn-lg w-100 rounded-pill py-2.5 shadow">
+                    <i class="bi bi-whatsapp me-2"></i> Abrir WhatsApp
+                  </button>
+                </div>
+              </div>
+            </div>
+
+            <!-- Recibo Detallado -->
+            <div class="card bg-white border border-subtle rounded-4 p-4 mb-4 shadow-sm" id="printableReceipt">
+              <div class="d-flex flex-column flex-sm-row justify-content-between align-items-sm-center border-bottom border-subtle pb-3 mb-3 gap-2">
+                <div>
+                  <h5 class="fw-bold text-dark mb-0">Comprobante de Orden</h5>
+                  <div class="small text-secondary" id="orderDateDisplay">Fecha</div>
+                </div>
+                <div id="orderStatusBadgeContainer">
+                  <!-- Badge de estado -->
+                </div>
+              </div>
+
+              <!-- Información de Entrega -->
+              <div class="row g-3 mb-4 text-secondary small">
+                <div class="col-sm-6">
+                  <strong class="text-dark d-block mb-1">Destinatario:</strong>
+                  <div id="customerName" class="text-dark fw-semibold">Nombre</div>
+                  <div id="customerPhone">Teléfono</div>
+                  <div id="customerEmail">Email</div>
+                </div>
+                <div class="col-sm-6">
+                  <strong class="text-dark d-block mb-1">Dirección de Entrega:</strong>
+                  <div id="customerAddress" class="text-dark">Dirección</div>
+                  <div id="customerNotes" class="fst-italic mt-1 text-muted"></div>
+                </div>
+              </div>
+
+              <!-- Tabla de Artículos -->
+              <h6 class="text-uppercase text-dark small fw-bold mb-2">Artículos del Pedido</h6>
+              <div class="table-responsive mb-3">
+                <table class="table align-middle mb-0">
+                  <thead>
+                    <tr>
+                      <th>Producto</th>
+                      <th class="text-center">Cant.</th>
+                      <th class="text-end">Precio Unit.</th>
+                      <th class="text-end pe-3">Subtotal</th>
+                    </tr>
+                  </thead>
+                  <tbody id="orderItemsTableBody">
+                    <!-- Filas dinámicas -->
+                  </tbody>
+                </table>
+              </div>
+
+              <!-- Totales -->
+              <div class="p-3 bg-light rounded-3 border border-subtle">
+                <div class="d-flex justify-content-between text-secondary small mb-1">
+                  <span>Subtotal:</span>
+                  <span id="orderSubtotalDisplay" class="text-dark fw-semibold">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between text-secondary small mb-2">
+                  <span>Costo de Envío:</span>
+                  <span id="orderShippingDisplay" class="text-dark fw-semibold">$0.00</span>
+                </div>
+                <div class="d-flex justify-content-between align-items-baseline border-top border-subtle pt-2">
+                  <span class="fw-bold text-dark fs-5">Total:</span>
+                  <span id="orderTotalDisplay" class="fs-4 fw-bold text-primary">$0.00</span>
+                </div>
+              </div>
+            </div>
+
+            <!-- Acciones Secundarias (No imprimir) -->
+            <div class="d-flex flex-wrap justify-content-center gap-3 no-print mb-5">
+              <button type="button" id="btnPrintReceipt" class="btn btn-outline-custom rounded-pill px-4">
+                <i class="bi bi-printer me-2"></i> Imprimir Comprobante
+              </button>
+              <button type="button" id="btnCopySummary" class="btn btn-outline-custom rounded-pill px-4">
+                <i class="bi bi-clipboard-check me-2"></i> Copiar Resumen
+              </button>
+              <a href="catalog.html" class="btn btn-primary rounded-pill px-4">
+                <i class="bi bi-grid-fill me-2"></i> Seguir Comprando
+              </a>
+            </div>
+
+          </div>
+        </div>
+      </div>
+
+      <!-- Estado Si No Encuentra el Pedido -->
+      <div id="orderError" class="text-center py-5" style="display: none;">
+        <i class="bi bi-exclamation-triangle display-4 text-warning mb-3 d-block"></i>
+        <h4 class="text-dark fw-bold mb-2">Pedido No Encontrado</h4>
+        <p class="text-secondary mb-4">No se pudo recuperar la información del pedido solicitado.</p>
+        <a href="catalog.html" class="btn btn-primary rounded-pill px-4">Volver a la Tienda</a>
+      </div>
+
+    </div>
+  </main>
+
+  <!-- Footer -->
+  <footer class="cs-footer py-4 mt-auto">
+    <div class="container text-center small text-secondary">
+      <p class="mb-0">&copy; 2026 CloudStore Serverless. Todos los derechos reservados.</p>
+    </div>
+  </footer>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="config/store.config.js"></script>
+  <script src="js/config.js"></script>
+  <script src="js/mock-data.js"></script>
+  <script src="js/storage.js"></script>
+  <script src="js/api.js"></script>
+  <script src="js/ui.js"></script>
+  <script src="js/orders.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', async () => {
+      const params = UI.getQueryParams();
+      const orderId = params.orderId;
+
+      const loadingEl = document.getElementById('orderLoading');
+      const contentEl = document.getElementById('orderSuccessContent');
+      const errorEl = document.getElementById('orderError');
+
+      if (!orderId) {
+        loadingEl.style.display = 'none';
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const res = await API.getOrderById(orderId);
+      loadingEl.style.display = 'none';
+
+      if (!res.success || !res.data) {
+        errorEl.style.display = 'block';
+        return;
+      }
+
+      const order = res.data;
+      contentEl.style.display = 'block';
+
+      // Llenar campos
+      document.getElementById('orderNumberDisplay').textContent = order.orderNumber;
+      document.getElementById('orderDateDisplay').textContent = UI.formatDate(order.createdAt);
+      document.getElementById('orderStatusBadgeContainer').innerHTML = UI.renderStatusBadge(order.status);
+
+      document.getElementById('customerName').textContent = order.customer.name;
+      document.getElementById('customerPhone').textContent = order.customer.phone;
+      document.getElementById('customerEmail').textContent = order.customer.email || 'Sin correo especificado';
+      document.getElementById('customerAddress').textContent = order.customer.address;
+      
+      const notesEl = document.getElementById('customerNotes');
+      if (order.customer.notes) {
+        notesEl.textContent = `Nota: "${order.customer.notes}"`;
+      } else {
+        notesEl.style.display = 'none';
+      }
+
+      // Tabla de artículos
+      const tbody = document.getElementById('orderItemsTableBody');
+      tbody.innerHTML = order.items.map(item => `
+        <tr>
+          <td>
+            <div class="fw-semibold text-dark">${item.name}</div>
+            <div class="text-secondary small font-monospace">${item.productId}</div>
+          </td>
+          <td class="text-center text-dark fw-semibold">${item.quantity}</td>
+          <td class="text-end text-secondary">${UI.formatCurrency(item.price)}</td>
+          <td class="text-end pe-3 fw-bold text-dark">${UI.formatCurrency(item.subtotal)}</td>
+        </tr>
+      `).join('');
+
+      document.getElementById('orderSubtotalDisplay').textContent = UI.formatCurrency(order.subtotal);
+      document.getElementById('orderShippingDisplay').textContent = order.shipping === 0 ? 'Gratis' : UI.formatCurrency(order.shipping);
+      document.getElementById('orderTotalDisplay').textContent = UI.formatCurrency(order.total);
+
+      // Botón WhatsApp
+      const btnWhatsApp = document.getElementById('btnOpenWhatsApp');
+      btnWhatsApp.addEventListener('click', () => {
+        Orders.openWhatsApp(order);
+      });
+
+      // Copiar Resumen
+      document.getElementById('btnCopySummary').addEventListener('click', async () => {
+        const storeName = (window.STORE_CONFIG && window.STORE_CONFIG.storeName) || 'CloudStore';
+        const textSummary = `Pedido ${order.orderNumber} en ${storeName} por un total de ${UI.formatCurrency(order.total)}. Cliente: ${order.customer.name}.`;
+        try {
+          await navigator.clipboard.writeText(textSummary);
+          UI.showToast('Resumen copiado al portapapeles', 'info');
+        } catch (e) {
+          UI.showToast('No se pudo copiar automáticamente', 'warning');
+        }
+      });
+
+      // Imprimir
+      document.getElementById('btnPrintReceipt').addEventListener('click', () => {
+        window.print();
+      });
+    });
+  </script>
+</body>
+</html>

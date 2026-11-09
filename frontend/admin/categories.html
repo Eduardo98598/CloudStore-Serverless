@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Categorías | CloudStore Admin</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-wrapper">
+    
+    <!-- Barra Lateral -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none">
+          <i class="bi bi-cloud-check-fill text-primary fs-4"></i>
+          <div>
+            <div class="brand-gradient fw-bold">CloudStore</div>
+            <div class="text-secondary small" style="font-size: 0.65rem;">PANEL DE CONTROL</div>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-heading">Principal</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <div class="sidebar-heading">Gestión Comercial</div>
+        <a href="products.html" class="sidebar-link">
+          <i class="bi bi-box-seam"></i> Productos
+        </a>
+        <a href="product-form.html" class="sidebar-link">
+          <i class="bi bi-plus-circle"></i> Nuevo Producto
+        </a>
+        <a href="categories.html" class="sidebar-link active">
+          <i class="bi bi-tags"></i> Categorías
+        </a>
+        <a href="orders.html" class="sidebar-link">
+          <i class="bi bi-receipt"></i> Pedidos
+        </a>
+
+        <div class="sidebar-heading">Acceso</div>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <i class="bi bi-box-arrow-up-right"></i> Ver Tienda Pública
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <div class="admin-main">
+      
+      <!-- Topbar -->
+      <header class="admin-topbar d-flex align-items-center justify-content-between px-4">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-custom d-lg-none" id="sidebarToggle">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          <h5 class="fw-bold text-dark mb-0">Administración de Categorías</h5>
+        </div>
+
+        <button type="button" class="btn btn-primary btn-sm rounded-pill px-3 shadow-sm" id="btnOpenNewCategoryModal">
+          <i class="bi bi-plus-lg me-1"></i> Nueva Categoría
+        </button>
+      </header>
+
+      <!-- Contenido -->
+      <main class="admin-content">
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h6 class="fw-bold text-dark mb-0">Categorías de Catálogo</h6>
+              <span class="text-secondary small">Organización jerárquica para la tienda pública</span>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-admin align-middle">
+              <thead>
+                <tr>
+                  <th>Nombre & Identificador</th>
+                  <th>Slug URL</th>
+                  <th>Descripción</th>
+                  <th>Productos Asociados</th>
+                  <th class="text-end">Acciones</th>
+                </tr>
+              </thead>
+              <tbody id="categoriesTableBody">
+                <!-- Carga dinámica -->
+              </tbody>
+            </table>
+          </div>
+        </div>
+      </main>
+
+    </div>
+  </div>
+
+  <!-- Modal Crear / Editar Categoría -->
+  <div class="modal fade" id="categoryModal" tabindex="-1" aria-labelledby="catModalTitle" aria-hidden="true">
+    <div class="modal-dialog modal-dialog-centered">
+      <div class="modal-content bg-white border shadow-lg">
+        <div class="modal-header border-bottom">
+          <h5 class="modal-title fw-bold text-dark" id="catModalTitle">Nueva Categoría</h5>
+          <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+        </div>
+
+        <form id="categoryForm" novalidate>
+          <div class="modal-body p-4">
+            <input type="hidden" id="catId" value="">
+
+            <div class="mb-3">
+              <label for="catName" class="form-label small text-secondary fw-semibold">
+                Nombre de la Categoría <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control" id="catName" placeholder="Ej. Laptops & Computadoras" required>
+              <div class="invalid-feedback">El nombre es obligatorio.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="catSlug" class="form-label small text-secondary fw-semibold">
+                Slug (identificador amigable URL) <span class="text-danger">*</span>
+              </label>
+              <input type="text" class="form-control font-monospace" id="catSlug" placeholder="laptops-computadoras" required>
+              <div class="invalid-feedback">El slug es requerido.</div>
+            </div>
+
+            <div class="mb-3">
+              <label for="catIcon" class="form-label small text-secondary fw-semibold">
+                Icono Bootstrap Icons <span class="text-muted">(bi-...)</span>
+              </label>
+              <div class="input-group">
+                <span class="input-group-text bg-light border text-primary" id="catIconPreview">
+                  <i class="bi bi-tag"></i>
+                </span>
+                <input type="text" class="form-control font-monospace" id="catIcon" value="bi-tag" placeholder="bi-laptop, bi-headphones...">
+              </div>
+            </div>
+
+            <div class="mb-3">
+              <label for="catDesc" class="form-label small text-secondary fw-semibold">
+                Descripción
+              </label>
+              <textarea class="form-control" id="catDesc" rows="3" placeholder="Breve resumen de los productos pertenecientes a este segmento..."></textarea>
+            </div>
+          </div>
+
+          <div class="modal-footer border-top">
+            <button type="button" class="btn btn-outline-secondary" data-bs-dismiss="modal">Cancelar</button>
+            <button type="submit" class="btn btn-primary px-4" id="btnSaveCategory">Guardar</button>
+          </div>
+        </form>
+
+      </div>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../config/store.config.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/categories.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Toggle sidebar móvil
+      const sidebar = document.getElementById('adminSidebar');
+      const toggleBtn = document.getElementById('sidebarToggle');
+      if (toggleBtn) toggleBtn.addEventListener('click', () => sidebar.classList.toggle('show'));
+
+      const modalEl = document.getElementById('categoryModal');
+      const bsModal = new bootstrap.Modal(modalEl);
+      const form = document.getElementById('categoryForm');
+      const btnNew = document.getElementById('btnOpenNewCategoryModal');
+      const catIdInput = document.getElementById('catId');
+      const catNameInput = document.getElementById('catName');
+      const catSlugInput = document.getElementById('catSlug');
+      const catIconInput = document.getElementById('catIcon');
+      const catDescInput = document.getElementById('catDesc');
+      const iconPreview = document.getElementById('catIconPreview');
+
+      // Auto-generar slug
+      catNameInput.addEventListener('input', () => {
+        if (!catIdInput.value) { // Solo al crear
+          catSlugInput.value = catNameInput.value
+            .toLowerCase()
+            .trim()
+            .replace(/[^\w\s-]/g, '')
+            .replace(/[\s_-]+/g, '-')
+            .replace(/^-+|-+$/g, '');
+        }
+      });
+
+      // Vista previa de icono
+      catIconInput.addEventListener('input', () => {
+        iconPreview.innerHTML = `<i class="bi ${catIconInput.value || 'bi-tag'}"></i>`;
+      });
+
+      // Abrir modal nuevo
+      btnNew.addEventListener('click', () => {
+        document.getElementById('catModalTitle').textContent = 'Nueva Categoría';
+        catIdInput.value = '';
+        form.reset();
+        catIconInput.value = 'bi-tag';
+        iconPreview.innerHTML = '<i class="bi bi-tag"></i>';
+        form.classList.remove('was-validated');
+        bsModal.show();
+      });
+
+      // Guardar categoría
+      form.addEventListener('submit', async (e) => {
+        e.preventDefault();
+
+        if (!form.checkValidity()) {
+          e.stopPropagation();
+          form.classList.add('was-validated');
+          return;
+        }
+
+        const isEdit = Boolean(catIdInput.value);
+        const payload = {
+          name: catNameInput.value.trim(),
+          slug: catSlugInput.value.trim(),
+          icon: catIconInput.value.trim() || 'bi-tag',
+          description: catDescInput.value.trim()
+        };
+
+        let res;
+        if (isEdit) {
+          res = await API.updateCategory(catIdInput.value, payload);
+        } else {
+          res = await API.createCategory(payload);
+        }
+
+        if (res.success) {
+          UI.showToast(res.message, 'success');
+          bsModal.hide();
+          Categories.loadAdminCategoriesTable('categoriesTableBody');
+        } else {
+          UI.showToast(res.error || 'Error al guardar categoría', 'danger');
+        }
+      });
+
+      // Carga inicial
+      Categories.loadAdminCategoriesTable('categoriesTableBody');
+    });
+  </script>
+</body>
+</html>

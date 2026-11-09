@@ -1,0 +1,236 @@
+/**
+ * CloudStore Serverless - Estilos del Panel Administrativo (Admin)
+ * Panel limpio, moderno y con alto contraste WCAG AA.
+ */
+
+:root {
+  --admin-sidebar-width: 260px;
+  --admin-header-height: 64px;
+}
+
+body.admin-body {
+  background-color: var(--background);
+  color: var(--text-primary);
+  min-height: 100vh;
+}
+
+/* ==========================================================================
+   LAYOUT DEL PANEL (SIDEBAR + MAIN)
+   ========================================================================== */
+.admin-wrapper {
+  display: flex;
+  min-height: 100vh;
+}
+
+.admin-sidebar {
+  width: var(--admin-sidebar-width);
+  background-color: var(--secondary);
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+  display: flex;
+  flex-direction: column;
+  position: fixed;
+  top: 0;
+  bottom: 0;
+  left: 0;
+  z-index: 1040;
+  transition: all 0.3s ease;
+  box-shadow: 2px 0 12px rgba(16, 28, 44, 0.15);
+}
+
+.admin-main {
+  flex: 1;
+  margin-left: var(--admin-sidebar-width);
+  display: flex;
+  flex-direction: column;
+  min-width: 0;
+  background-color: var(--background);
+}
+
+.admin-topbar {
+  height: var(--admin-header-height);
+  background-color: var(--surface);
+  border-bottom: 1px solid var(--border);
+  position: sticky;
+  top: 0;
+  z-index: 1030;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.03);
+}
+
+.admin-topbar h5 {
+  color: var(--text-primary) !important;
+}
+
+.admin-content {
+  padding: 1.75rem;
+  flex: 1;
+}
+
+/* ==========================================================================
+   NAVEGACIÓN LATERAL (BARRA AZUL MARINO)
+   ========================================================================== */
+.sidebar-brand {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-nav {
+  padding: 1rem 0.75rem;
+  flex: 1;
+  overflow-y: auto;
+}
+
+.sidebar-heading {
+  font-size: 0.7rem;
+  text-transform: uppercase;
+  letter-spacing: 1px;
+  color: #94A3B8;
+  font-weight: 700;
+  padding: 0.75rem 0.75rem 0.25rem;
+}
+
+.sidebar-link {
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  padding: 0.75rem 0.85rem;
+  color: #CBD5E1;
+  text-decoration: none;
+  font-weight: 500;
+  border-radius: 0.5rem;
+  transition: all 0.2s ease;
+  margin-bottom: 0.25rem;
+}
+
+.sidebar-link i {
+  font-size: 1.15rem;
+}
+
+.sidebar-link:hover {
+  color: #FFFFFF;
+  background-color: rgba(255, 255, 255, 0.08);
+}
+
+.sidebar-link.active {
+  color: var(--text-on-primary);
+  background-color: var(--primary);
+  font-weight: 600;
+  box-shadow: var(--btn-primary-shadow);
+}
+
+.sidebar-footer {
+  padding: 1rem 1.25rem;
+  border-top: 1px solid rgba(255, 255, 255, 0.08);
+}
+
+/* ==========================================================================
+   TARJETAS DE MÉTRICAS & INDICADORES (KPIs)
+   ========================================================================== */
+.stat-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  padding: 1.5rem;
+  position: relative;
+  overflow: hidden;
+  transition: transform 0.2s ease, box-shadow 0.2s ease;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.05);
+}
+
+.stat-card:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 8px 16px -4px rgba(0, 0, 0, 0.08);
+  border-color: #CBD5E1;
+}
+
+.stat-card h3 {
+  color: var(--text-primary) !important;
+}
+
+.stat-icon {
+  width: 48px;
+  height: 48px;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 1.5rem;
+}
+
+.stat-icon-blue {
+  background: #EFF6FF;
+  color: var(--primary);
+  border: 1px solid #DBEAFE;
+}
+
+.stat-icon-green {
+  background: #F0FDF4;
+  color: var(--success);
+  border: 1px solid #DCFCE7;
+}
+
+.stat-icon-purple {
+  background: #FAF5FF;
+  color: #9333EA;
+  border: 1px solid #F3E8FF;
+}
+
+.stat-icon-amber {
+  background: #FFFBEB;
+  color: var(--warning);
+  border: 1px solid #FEF3C7;
+}
+
+/* ==========================================================================
+   TARJETAS Y CONTENEDORES ADMINISTRATIVOS
+   ========================================================================== */
+.admin-card {
+  background-color: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--card-radius);
+  overflow: hidden;
+  box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+}
+
+.admin-card-header {
+  padding: 1.25rem 1.5rem;
+  border-bottom: 1px solid var(--border);
+  background-color: #F8FAFC;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.admin-card-header h6 {
+  color: var(--text-primary) !important;
+}
+
+.product-thumb-sm {
+  width: 44px;
+  height: 44px;
+  border-radius: 8px;
+  object-fit: contain;
+  background-color: #F1F5F9;
+  border: 1px solid var(--border);
+  padding: 2px;
+}
+
+/* ==========================================================================
+   RESPONSIVIDAD MÓVIL
+   ========================================================================== */
+@media (max-width: 991.98px) {
+  .admin-sidebar {
+    transform: translateX(-100%);
+  }
+
+  .admin-sidebar.show {
+    transform: translateX(0);
+  }
+
+  .admin-main {
+    margin-left: 0;
+  }
+
+  .admin-content {
+    padding: 1rem;
+  }
+}

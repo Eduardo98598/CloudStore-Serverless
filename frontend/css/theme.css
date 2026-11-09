@@ -1,0 +1,95 @@
+/**
+ * ============================================================================
+ * CLOUDSTORE SERVERLESS — TEMA E IDENTIDAD VISUAL (VARIABLES CSS)
+ * ============================================================================
+ * Modifica las variables de este archivo para cambiar los colores, tipografía,
+ * bordes redondeados y estilo de botones de toda la tienda y panel admin.
+ *
+ * RECOMENDACIÓN DE ACCESIBILIDAD (WCAG AA):
+ *   - Mantén un contraste alto entre --background / --surface (claros)
+ *     y --text-primary / --text-secondary (oscuros).
+ *   - El color --secondary (--navy) se usa en la barra superior y el pie de
+ *     página con texto claro (--nav-text).
+ * ============================================================================
+ */
+
+:root {
+  /* ------------------------------------------------------------------------
+     1. COLOR PRINCIPAL DE LA MARCA (Botones primarios, enlaces, acentos)
+     ------------------------------------------------------------------------ */
+  --primary: #2563EB;
+  --primary-hover: #1D4ED8;
+  --primary-soft: #EFF6FF;
+  --primary-border: #93C5FD;
+  --primary-focus-ring: rgba(37, 99, 235, 0.18);
+
+  /* ------------------------------------------------------------------------
+     2. COLOR SECUNDARIO / NAVEGACIÓN Y FOOTER (Fondo oscuro de alto contraste)
+     ------------------------------------------------------------------------ */
+  --secondary: #101C2C;
+  --secondary-hover: #1E293B;
+  --navy: var(--secondary);
+
+  /* Gradiente del nombre comercial y banner inferior */
+  --brand-gradient-start: #60A5FA;
+  --brand-gradient-end: #38BDF8;
+  --cta-gradient-start: #13273E;
+  --cta-gradient-end: #0D1B2A;
+
+  /* ------------------------------------------------------------------------
+     3. COLORES DE FONDO Y SUPERFICIES (Tarjetas, tablas, modales, formularios)
+     ------------------------------------------------------------------------ */
+  --background: #F8FAFC;
+  --surface: #FFFFFF;
+  --surface-alt: #F1F5F9;
+  --hero-gradient-start: #EFF6FF;
+  --hero-gradient-end: var(--background);
+
+  /* ------------------------------------------------------------------------
+     4. COLORES DE TEXTO (Garantizan lectura nítida sobre fondos claros)
+     ------------------------------------------------------------------------ */
+  --text-primary: #0F172A;
+  --text-secondary: #334155;
+  --text-muted: #64748B;
+  --text-on-primary: #FFFFFF;
+  --nav-text: #E2E8F0;
+  --nav-text-hover: #FFFFFF;
+  --footer-text: #94A3B8;
+  --footer-link: #CBD5E1;
+
+  /* ------------------------------------------------------------------------
+     5. COLORES DE BORDES Y DIVISORES
+     ------------------------------------------------------------------------ */
+  --border: #E2E8F0;
+  --border-strong: #CBD5E1;
+
+  /* ------------------------------------------------------------------------
+     6. COLORES SEMÁNTICOS (Estados, alertas, WhatsApp)
+     ------------------------------------------------------------------------ */
+  --success: #16A34A;
+  --warning: #D97706;
+  --danger: #DC2626;
+  --whatsapp: #25D366;
+  --whatsapp-hover: #128C7E;
+
+  /* ------------------------------------------------------------------------
+     7. TIPOGRAFÍA
+     ------------------------------------------------------------------------ */
+  --font-family-base: system-ui, -apple-system, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+  --font-family-heading: var(--font-family-base);
+  --heading-weight: 700;
+  --heading-letter-spacing: -0.02em;
+
+  /* ------------------------------------------------------------------------
+     8. BORDES REDONDEADOS Y ESTILOS DE BOTONES / TARJETAS
+     ------------------------------------------------------------------------ */
+  --card-radius: 0.85rem;
+  --btn-radius: 0.5rem;
+  --input-radius: 0.5rem;
+  --btn-font-weight: 600;
+  --card-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+  --card-shadow-hover: 0 12px 24px -6px rgba(37, 99, 235, 0.12), 0 4px 6px -2px rgba(0, 0, 0, 0.05);
+  --btn-primary-shadow: 0 1px 3px rgba(37, 99, 235, 0.2);
+  --btn-primary-shadow-hover: 0 4px 12px rgba(37, 99, 235, 0.35);
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+}

@@ -1,0 +1,11 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 64 64" width="64" height="64" fill="none">
+  <defs>
+    <linearGradient id="csLogoGrad" x1="0%" y1="0%" x2="100%" y2="100%">
+      <stop offset="0%" stop-color="#2563EB" />
+      <stop offset="100%" stop-color="#38BDF8" />
+    </linearGradient>
+  </defs>
+  <rect x="4" y="4" width="56" height="56" rx="16" fill="url(#csLogoGrad)" />
+  <path d="M44.5 29.2C44.1 22.9 38.9 18 32.5 18C26.9 18 22.1 21.8 20.8 27.1C16.9 27.7 14 31.1 14 35.2C14 39.7 17.7 43.4 22.2 43.4H43.5C47.1 43.4 50 40.5 50 36.9C50 33.5 47.6 30.6 44.5 29.2Z" fill="#FFFFFF" />
+  <path d="M29.8 38.2L24.6 33L26.7 30.9L29.8 34L37.3 26.5L39.4 28.6L29.8 38.2Z" fill="#2563EB" />
+</svg>

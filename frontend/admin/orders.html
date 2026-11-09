@@ -1,0 +1,263 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Gestión de Pedidos | CloudStore Admin</title>
+  
+  <!-- Bootstrap 5.3 CSS -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/css/bootstrap.min.css" rel="stylesheet">
+  <!-- Bootstrap Icons -->
+  <link href="https://cdn.jsdelivr.net/npm/bootstrap-icons@1.11.3/font/bootstrap-icons.min.css" rel="stylesheet">
+  <!-- Custom Styles -->
+  <link rel="stylesheet" href="../css/theme.css">
+  <link rel="stylesheet" href="../css/styles.css">
+  <link rel="stylesheet" href="../css/admin.css">
+</head>
+<body class="admin-body">
+
+  <div class="admin-wrapper">
+    
+    <!-- Barra Lateral -->
+    <aside class="admin-sidebar" id="adminSidebar">
+      <div class="sidebar-brand">
+        <a href="index.html" class="d-flex align-items-center gap-2 text-decoration-none">
+          <i class="bi bi-cloud-check-fill text-primary fs-4"></i>
+          <div>
+            <div class="brand-gradient fw-bold">CloudStore</div>
+            <div class="text-secondary small" style="font-size: 0.65rem;">PANEL DE CONTROL</div>
+          </div>
+        </a>
+      </div>
+
+      <nav class="sidebar-nav">
+        <div class="sidebar-heading">Principal</div>
+        <a href="index.html" class="sidebar-link">
+          <i class="bi bi-speedometer2"></i> Dashboard
+        </a>
+
+        <div class="sidebar-heading">Gestión Comercial</div>
+        <a href="products.html" class="sidebar-link">
+          <i class="bi bi-box-seam"></i> Productos
+        </a>
+        <a href="product-form.html" class="sidebar-link">
+          <i class="bi bi-plus-circle"></i> Nuevo Producto
+        </a>
+        <a href="categories.html" class="sidebar-link">
+          <i class="bi bi-tags"></i> Categorías
+        </a>
+        <a href="orders.html" class="sidebar-link active">
+          <i class="bi bi-receipt"></i> Pedidos
+        </a>
+
+        <div class="sidebar-heading">Acceso</div>
+        <a href="../index.html" class="sidebar-link" target="_blank">
+          <i class="bi bi-box-arrow-up-right"></i> Ver Tienda Pública
+        </a>
+      </nav>
+    </aside>
+
+    <!-- Contenido Principal -->
+    <div class="admin-main">
+      
+      <!-- Topbar -->
+      <header class="admin-topbar d-flex align-items-center justify-content-between px-4">
+        <div class="d-flex align-items-center gap-3">
+          <button class="btn btn-outline-custom d-lg-none" id="sidebarToggle">
+            <i class="bi bi-list fs-5"></i>
+          </button>
+          <h5 class="fw-bold text-dark mb-0">Listado de Pedidos</h5>
+        </div>
+      </header>
+
+      <!-- Contenido -->
+      <main class="admin-content">
+        
+        <!-- Filtros y Búsqueda -->
+        <div class="admin-card p-3 mb-4">
+          <div class="row g-3 align-items-center">
+            
+            <!-- Búsqueda -->
+            <div class="col-md-6">
+              <div class="input-group">
+                <span class="input-group-text bg-light border text-secondary"><i class="bi bi-search"></i></span>
+                <input type="text" id="orderSearchInput" class="form-control" placeholder="Buscar por orden CS-2026-..., cliente o teléfono...">
+              </div>
+            </div>
+
+            <!-- Filtro de Estado -->
+            <div class="col-md-4">
+              <select id="orderStatusFilter" class="form-select">
+                <option value="all">Todos los estados</option>
+                <option value="pendiente">Pendientes</option>
+                <option value="confirmado">Confirmados</option>
+                <option value="enviado">Enviados</option>
+                <option value="cancelado">Cancelados</option>
+              </select>
+            </div>
+
+            <!-- Contador -->
+            <div class="col-md-2 text-md-end">
+              <span class="text-secondary small">Total: </span>
+              <span id="ordersCounter" class="fw-bold text-primary">0</span>
+            </div>
+
+          </div>
+        </div>
+
+        <!-- Tabla de Pedidos -->
+        <div class="admin-card">
+          <div class="admin-card-header">
+            <div>
+              <h6 class="fw-bold text-dark mb-0">Control de Órdenes</h6>
+              <span class="text-secondary small">Historial de pedidos recibidos</span>
+            </div>
+          </div>
+
+          <div class="table-responsive">
+            <table class="table table-admin align-middle">
+              <thead>
+                <tr>
+                  <th>N° Orden</th>
+                  <th>Cliente & Contacto</th>
+                  <th>Fecha</th>
+                  <th>Artículos</th>
+                  <th>Total</th>
+                  <th>Estado</th>
+                  <th class="text-end">Acción</th>
+                </tr>
+              </thead>
+              <tbody id="ordersTableBody">
+                <tr>
+                  <td colspan="7" class="text-center py-5 text-secondary">
+                    <div class="spinner-border text-primary spinner-border-sm me-2"></div> Cargando pedidos...
+                  </td>
+                </tr>
+              </tbody>
+            </table>
+          </div>
+        </div>
+
+      </main>
+    </div>
+  </div>
+
+  <!-- Scripts -->
+  <script src="https://cdn.jsdelivr.net/npm/bootstrap@5.3.3/dist/js/bootstrap.bundle.min.js"></script>
+  <script src="../config/store.config.js"></script>
+  <script src="../js/config.js"></script>
+  <script src="../js/mock-data.js"></script>
+  <script src="../js/storage.js"></script>
+  <script src="../js/api.js"></script>
+  <script src="../js/ui.js"></script>
+  <script src="../js/orders.js"></script>
+
+  <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      // Toggle sidebar móvil
+      const sidebar = document.getElementById('adminSidebar');
+      const toggleBtn = document.getElementById('sidebarToggle');
+      if (toggleBtn) toggleBtn.addEventListener('click', () => sidebar.classList.toggle('show'));
+
+      const tbody = document.getElementById('ordersTableBody');
+      const searchInput = document.getElementById('orderSearchInput');
+      const statusSelect = document.getElementById('orderStatusFilter');
+      const counterEl = document.getElementById('ordersCounter');
+
+      async function loadOrders() {
+        tbody.innerHTML = `
+          <tr>
+            <td colspan="7" class="text-center py-4 text-secondary">
+              <div class="spinner-border spinner-border-sm text-primary me-2"></div> Actualizando pedidos...
+            </td>
+          </tr>
+        `;
+
+        const filters = {
+          search: searchInput.value.trim(),
+          status: statusSelect.value
+        };
+
+        const res = await API.getOrders(filters);
+        if (!res.success || !res.data) {
+          tbody.innerHTML = `<tr><td colspan="7" class="text-center py-4 text-danger">Error al consultar pedidos</td></tr>`;
+          return;
+        }
+
+        const orders = res.data;
+        counterEl.textContent = orders.length;
+
+        if (orders.length === 0) {
+          tbody.innerHTML = `
+            <tr>
+              <td colspan="7" class="text-center py-5 text-secondary">
+                No se encontraron pedidos con los criterios indicados.
+              </td>
+            </tr>
+          `;
+          return;
+        }
+
+        tbody.innerHTML = orders.map(o => {
+          const itemsCount = (o.items || []).reduce((acc, i) => acc + (i.quantity || 1), 0);
+          return `
+            <tr>
+              <td>
+                <span class="fw-bold font-monospace text-cyan">${o.orderNumber}</span>
+              </td>
+              <td>
+                <div class="fw-semibold text-dark">${o.customer?.name || 'Anónimo'}</div>
+                <div class="text-secondary small"><i class="bi bi-telephone me-1"></i>${o.customer?.phone || 'N/A'}</div>
+              </td>
+              <td class="text-secondary small">
+                ${UI.formatDate(o.createdAt)}
+              </td>
+              <td>
+                <span class="badge bg-light text-secondary border px-2 py-1">
+                  ${itemsCount} unid. (${(o.items || []).length} prod.)
+                </span>
+              </td>
+              <td class="fw-bold text-dark fs-6">
+                ${UI.formatCurrency(o.total)}
+              </td>
+              <td>
+                ${UI.renderStatusBadge(o.status)}
+              </td>
+              <td class="text-end">
+                <div class="btn-group btn-group-sm">
+                  <a href="order-detail.html?id=${o.id}" class="btn btn-outline-secondary" title="Ver detalle y gestionar">
+                    <i class="bi bi-eye"></i> Detalle
+                  </a>
+                  <button type="button" class="btn btn-outline-success btn-whatsapp-direct" data-id="${o.id}" title="Enviar resumen por WhatsApp">
+                    <i class="bi bi-whatsapp"></i>
+                  </button>
+                </div>
+              </td>
+            </tr>
+          `;
+        }).join('');
+
+        // Escuchar clics en WhatsApp directo hacia el cliente
+        tbody.querySelectorAll('.btn-whatsapp-direct').forEach(btn => {
+          btn.addEventListener('click', async () => {
+            const id = btn.dataset.id;
+            const res = await API.getOrderById(id);
+            if (res.success && res.data) {
+              Orders.openWhatsApp(res.data, res.data.customer?.phone, true);
+            }
+          });
+        });
+      }
+
+      let timeout;
+      searchInput.addEventListener('input', () => {
+        clearTimeout(timeout);
+        timeout = setTimeout(loadOrders, 250);
+      });
+      statusSelect.addEventListener('change', loadOrders);
+
+      loadOrders();
+    });
+  </script>
+</body>
+</html>

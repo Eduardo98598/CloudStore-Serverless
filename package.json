@@ -1,0 +1,21 @@
+{
+  "name": "cloudstore-serverless",
+  "version": "1.0.0",
+  "description": "CloudStore Serverless - Modern Tech Store Frontend prepared for AWS Serverless Architecture",
+  "main": "server.js",
+  "scripts": {
+    "start": "node server.js",
+    "dev": "node server.js",
+    "test": "node tests/e2e-simulation.js && node tests/backend-audit.test.js"
+  },
+  "keywords": [
+    "serverless",
+    "aws",
+    "ecommerce",
+    "javascript-vanilla",
+    "bootstrap5",
+    "node24"
+  ],
+  "author": "CloudStore Team",
+  "license": "MIT"
+}

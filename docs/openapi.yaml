@@ -1,0 +1,474 @@
+openapi: 3.0.3
+info:
+  title: CloudStore Serverless API
+  description: Especificación OpenAPI 3.0 para la arquitectura Serverless de CloudStore en Amazon API Gateway y AWS Lambda.
+  version: 1.0.0
+servers:
+  - url: https://api.cloudstore.dev/prod
+    description: Amazon API Gateway HTTP API (Producción)
+  - url: http://localhost:3000
+    description: Entorno local con API simulada
+
+paths:
+  /products:
+    get:
+      summary: Consultar catálogo de productos públicos
+      description: Retorna productos activos con soporte para búsqueda, filtros y ordenamiento.
+      parameters:
+        - name: categoryId
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: search
+          in: query
+          required: false
+          schema:
+            type: string
+        - name: onlyFeatured
+          in: query
+          required: false
+          schema:
+            type: boolean
+        - name: sort
+          in: query
+          required: false
+          schema:
+            type: string
+            enum: [newest, price-asc, price-desc, name-asc, name-desc]
+      responses:
+        '200':
+          description: Lista de productos encontrados
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductListResponse'
+
+  /products/{id}:
+    get:
+      summary: Obtener detalle de un producto por ID
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalle del producto
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ProductSingleResponse'
+        '404':
+          description: Producto no encontrado
+
+  /admin/products:
+    get:
+      summary: Listado administrativo de productos (incluye inactivos)
+      parameters:
+        - name: search
+          in: query
+          schema:
+            type: string
+        - name: categoryId
+          in: query
+          schema:
+            type: string
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [all, active, inactive]
+      responses:
+        '200':
+          description: Lista completa de productos
+    post:
+      summary: Crear un nuevo producto
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '201':
+          description: Producto creado exitosamente
+
+  /admin/products/{id}:
+    put:
+      summary: Actualizar un producto existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ProductInput'
+      responses:
+        '200':
+          description: Producto actualizado
+    delete:
+      summary: Eliminar un producto
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Producto eliminado
+
+  /categories:
+    get:
+      summary: Listar todas las categorías de catálogo
+      responses:
+        '200':
+          description: Lista de categorías con conteo de productos
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/CategoryListResponse'
+
+  /admin/categories:
+    post:
+      summary: Crear una nueva categoría
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '201':
+          description: Categoría creada
+
+  /admin/categories/{id}:
+    put:
+      summary: Actualizar una categoría existente
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CategoryInput'
+      responses:
+        '200':
+          description: Categoría actualizada
+    delete:
+      summary: Eliminar una categoría (solo si no tiene productos)
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Categoría eliminada
+        '400':
+          description: No se puede eliminar porque contiene productos asignados
+
+  /orders:
+    post:
+      summary: Registrar una nueva orden de compra
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/CreateOrderInput'
+      responses:
+        '201':
+          description: Pedido registrado con éxito
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSingleResponse'
+
+  /orders/{id}:
+    get:
+      summary: Consultar detalle de un pedido por ID o Número de Orden
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Detalle del pedido
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/OrderSingleResponse'
+
+  /admin/orders:
+    get:
+      summary: Consultar listado de pedidos para el panel de administración
+      parameters:
+        - name: status
+          in: query
+          schema:
+            type: string
+            enum: [all, pendiente, confirmado, enviado, cancelado]
+        - name: search
+          in: query
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Historial de pedidos
+
+  /admin/orders/{id}/status:
+    patch:
+      summary: Actualizar el estado de un pedido y/o número de guía
+      parameters:
+        - name: id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              required: [status]
+              properties:
+                status:
+                  type: string
+                  enum: [pendiente, confirmado, enviado, cancelado]
+                trackingNumber:
+                  type: string
+      responses:
+        '200':
+          description: Estado del pedido actualizado
+
+  /admin/dashboard/metrics:
+    get:
+      summary: Obtener indicadores KPI del panel de control
+      responses:
+        '200':
+          description: Métricas calculadas en tiempo real
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/DashboardMetricsResponse'
+
+components:
+  schemas:
+    Product:
+      type: object
+      properties:
+        id:
+          type: string
+        name:
+          type: string
+        slug:
+          type: string
+        categoryId:
+          type: string
+        categoryName:
+          type: string
+        price:
+          type: number
+        comparePrice:
+          type: number
+          nullable: true
+        stock:
+          type: integer
+        description:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        image:
+          type: string
+        featured:
+          type: boolean
+        active:
+          type: boolean
+        createdAt:
+          type: string
+
+    ProductInput:
+      type: object
+      required: [name, categoryId, price, stock, image, description]
+      properties:
+        name:
+          type: string
+        categoryId:
+          type: string
+        categoryName:
+          type: string
+        price:
+          type: number
+        comparePrice:
+          type: number
+          nullable: true
+        stock:
+          type: integer
+        image:
+          type: string
+        description:
+          type: string
+        features:
+          type: array
+          items:
+            type: string
+        active:
+          type: boolean
+        featured:
+          type: boolean
+
+    ProductListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            $ref: '#/components/schemas/Product'
+
+    ProductSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          $ref: '#/components/schemas/Product'
+
+    CategoryInput:
+      type: object
+      required: [name, slug]
+      properties:
+        name:
+          type: string
+        slug:
+          type: string
+        icon:
+          type: string
+        description:
+          type: string
+
+    CategoryListResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: array
+          items:
+            type: object
+            properties:
+              id:
+                type: string
+              name:
+                type: string
+              slug:
+                type: string
+              icon:
+                type: string
+              productCount:
+                type: integer
+
+    CreateOrderInput:
+      type: object
+      required: [customer, items, subtotal, total]
+      properties:
+        customer:
+          type: object
+          required: [name, phone, address]
+          properties:
+            name:
+              type: string
+            phone:
+              type: string
+            email:
+              type: string
+            address:
+              type: string
+            notes:
+              type: string
+        items:
+          type: array
+          items:
+            type: object
+            required: [productId, name, price, quantity]
+            properties:
+              productId:
+                type: string
+              name:
+                type: string
+              price:
+                type: number
+              quantity:
+                type: integer
+              image:
+                type: string
+        subtotal:
+          type: number
+        shipping:
+          type: number
+        total:
+          type: number
+
+    OrderSingleResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            id:
+              type: string
+            orderNumber:
+              type: string
+            status:
+              type: string
+            total:
+              type: number
+
+    DashboardMetricsResponse:
+      type: object
+      properties:
+        success:
+          type: boolean
+        data:
+          type: object
+          properties:
+            totalRevenue:
+              type: number
+            totalOrders:
+              type: integer
+            totalProducts:
+              type: integer
+            totalCategories:
+              type: integer
+            ordersPending:
+              type: integer
+            ordersConfirmed:
+              type: integer
+            ordersShipped:
+              type: integer
+            ordersCancelled:
+              type: integer
+            lowStockCount:
+              type: integer
