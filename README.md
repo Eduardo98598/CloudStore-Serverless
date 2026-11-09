@@ -1,252 +1,375 @@
-# CloudStore Serverless — Frontend E-Commerce de Tecnología
+# CloudStore Serverless
 
-**CloudStore** es una tienda de tecnología moderna, elegante y funcional desarrollada con **JavaScript Vanilla** y **Bootstrap 5**, diseñada bajo un patrón desacoplado y lista para integrarse de forma transparente con una arquitectura **Serverless en Amazon Web Services (AWS)**.
+Tienda de comercio electrónico educativa construida con **HTML5, CSS3,
+JavaScript Vanilla, Bootstrap 5 y AWS Serverless**. El proyecto permite
+practicar el desarrollo de una aplicación web desacoplada y su
+integración con servicios administrados de AWS.
 
----
+> **Propósito educativo:** CloudStore es una aplicación de demostración
+> para el taller. No debe utilizarse como tienda de producción sin
+> implementar autenticación, autorización, controles adicionales de
+> seguridad y las medidas operativas correspondientes.
 
-## 🚀 1. Tecnologías y Requisitos
+## 1. ¿Qué aprenderás?
 
-- **HTML5** semántico y accesible.
-- **CSS3** con diseño responsivo y tema dark tech.
-- **Bootstrap 5.3.3** y **Bootstrap Icons 1.11.3**.
-- **JavaScript Vanilla (ES6+)** sin frameworks adicionales.
-- **Node.js 24.x** (probado en v24.22.2).
-- **npm 11.x** (probado en v11.19.1).
+-   Estructurar un frontend web sin depender de un framework.
+-   Separar la interfaz de la capa de acceso a datos.
+-   Consumir una API HTTP desde JavaScript.
+-   Crear y consultar datos mediante AWS Lambda y Amazon DynamoDB.
+-   Comprender el papel de Amazon API Gateway.
+-   Personalizar la identidad visual y el catálogo de una tienda.
+-   Preparar el frontend para alojarlo en Amazon S3 y distribuirlo con
+    Amazon CloudFront.
 
----
+## 2. Arquitectura
 
-## 📂 2. Estructura del Proyecto
+El frontend se comunica con una capa de acceso a datos (`api.js`). Esta
+capa permite trabajar con datos simulados durante el desarrollo local o
+consumir la API desplegada en AWS.
 
-```text
+``` text
+                 Frontend (HTML / CSS / JavaScript)
+                                |
+                                v
+                      Data Access Layer
+                          frontend/js/api.js
+                         /               \
+                        v                 v
+                Modo simulado       AWS API Gateway
+                localStorage               |
+                                           v
+                                     AWS Lambda
+                             Products / Categories / Orders
+                                           |
+                                           v
+                                      DynamoDB
+```
+
+Servicios utilizados:
+
+  -----------------------------------------------------------------------
+  Servicio                            Responsabilidad
+  ----------------------------------- -----------------------------------
+  Amazon API Gateway (HTTP API)       Recibe las solicitudes HTTP y las
+                                      dirige a las funciones Lambda.
+
+  AWS Lambda (Node.js 24.x)           Ejecuta la lógica de productos,
+                                      categorías y pedidos.
+
+  Amazon DynamoDB                     Almacena productos, categorías y
+                                      pedidos.
+
+  Amazon CloudWatch                   Permite consultar registros y
+                                      métricas de ejecución de Lambda.
+
+  Amazon S3                           Servicio previsto para alojar el
+                                      frontend estático.
+
+  Amazon CloudFront                   Servicio previsto para distribuir
+                                      el frontend mediante una CDN y
+                                      HTTPS.
+  -----------------------------------------------------------------------
+
+### Recursos del backend del taller
+
+La implementación de referencia del instructor utiliza la región
+**`mx-central-1`** y estos recursos:
+
+  Recurso                Nombre
+  ---------------------- -------------------------
+  Tabla de productos     `CloudStore-Products`
+  Tabla de categorías    `CloudStore-Categories`
+  Tabla de pedidos       `CloudStore-Orders`
+  Lambda de productos    `CloudStore-Products`
+  Lambda de categorías   `CloudStore-Categories`
+  Lambda de pedidos      `CloudStore-Orders`
+  API Gateway            `CloudStore-API`
+  Etapa de API Gateway   `$default`
+
+La URL base de la API de referencia del instructor es:
+
+``` text
+https://w8n9qxsmsd.execute-api.mx-central-1.amazonaws.com
+```
+
+Esta URL corresponde al entorno del instructor. Si tu equipo despliega
+recursos propios, deberá utilizar la URL de su propia API.
+
+## 3. Tecnologías y requisitos
+
+-   HTML5 y CSS3.
+-   JavaScript Vanilla (ES6+).
+-   Bootstrap 5.3.3 y Bootstrap Icons 1.11.3.
+-   Node.js 24.x.
+-   npm 11.x.
+-   Git y una cuenta de GitHub.
+-   Navegador web actualizado.
+
+El servidor local incluido utiliza módulos nativos de Node.js y no
+requiere dependencias externas para servir los archivos estáticos.
+
+## 4. Estructura del repositorio
+
+``` text
 CloudStore-Serverless/
-├── package.json               # Configuración de Node.js y scripts de arranque
-├── server.js                  # Servidor HTTP estático nativo en Node.js (cero dependencias externas)
-├── README.md                  # Documentación completa y guía de AWS
-└── frontend/
-    ├── index.html             # Portada de la tienda con productos y categorías destacadas
-    ├── catalog.html           # Catálogo completo con buscador, filtros y ordenamiento
-    ├── product.html           # Vista de detalle de producto con galería y especificaciones
-    ├── cart.html              # Carrito de compras con persistencia y cálculo en tiempo real
-    ├── checkout.html          # Formulario de orden de compra y validación de cliente
-    ├── order-success.html     # Confirmación de pedido con botón de apertura en WhatsApp
-    ├── admin/
-    │   ├── index.html         # Dashboard administrativo con KPIs y alertas de stock
-    │   ├── products.html      # Listado y gestión rápida de productos (activar/desactivar)
-    │   ├── product-form.html  # Formulario unificado de creación y edición de productos
-    │   ├── categories.html    # Gestión completa (CRUD) de categorías
-    │   ├── orders.html        # Historial y filtrado de pedidos por estado
-    │   └── order-detail.html  # Detalle de pedido, cambio de estado y contacto por WhatsApp
-    ├── css/
-    │   ├── styles.css         # Estilos visuales del frontend público (paleta oscura tecnológica)
-    │   └── admin.css          # Estilos de layout, barra lateral y tablas del panel admin
-    └── js/
-        ├── config.js          # Configuración global, switch USE_MOCK_API y API_BASE_URL
-        ├── mock-data.js       # Datos semilla iniciales (14 productos, 5 categorías, 5 pedidos)
-        ├── storage.js         # Capa de almacenamiento local (localStorage simulando DynamoDB)
-        ├── api.js             # Data Access Layer unificado (enruta a Mock o a AWS API Gateway)
-        ├── ui.js              # Helpers de interfaz: notificaciones toast, moneda, modales y fechas
-        ├── cart.js            # Lógica y operaciones del carrito de compras
-        ├── products.js        # Operaciones y renderizado de productos
-        ├── orders.js          # Lógica de pedidos y formateador para WhatsApp
-        └── categories.js      # Operaciones y modal de administración de categorías
+├── backend/
+│   ├── products/
+│   ├── categories/
+│   ├── orders/
+│   └── shared/
+├── docs/
+├── frontend/
+│   ├── admin/
+│   ├── assets/
+│   ├── config/
+│   ├── css/
+│   └── js/
+├── tests/
+├── API-CONTRACT.md
+├── DYNAMODB-DESIGN.md
+├── PERSONALIZAR-TIENDA.md
+├── package.json
+├── server.js
+└── README.md
 ```
 
----
+-   `backend/`: código de las funciones Lambda y módulos compartidos.
+-   `docs/`: documentación de arquitectura, base de datos y API.
+-   `frontend/`: tienda pública y panel administrativo.
+-   `tests/`: pruebas y simulaciones del backend.
+-   `API-CONTRACT.md`: contrato de endpoints.
+-   `DYNAMODB-DESIGN.md`: diseño de tablas e índices.
+-   `PERSONALIZAR-TIENDA.md`: guía de personalización para los equipos.
 
-## ⚙️ 3. Comunicación entre Módulos y Arquitectura JS
+## 5. Obtener el proyecto mediante Fork
 
-El frontend implementa una **Capa de Abstracción de Datos (Data Access Layer)** que independiza la interfaz de usuario de la fuente de datos:
+Cada equipo trabajará en una copia propia del repositorio.
 
-```
-[ Páginas HTML / Componentes UI ]
-               │
-               ▼
-   [ Módulos de Dominio (cart.js, products.js, orders.js) ]
-               │
-               ▼
-          [ api.js ] (Data Access Layer)
-          /        \
-  (USE_MOCK_API)    (API_BASE_URL)
-        /            \
-       ▼              ▼
-[ storage.js ]     [ AWS API Gateway (HTTP API) ]
-(localStorage)                │
-                              ▼
-                     [ AWS Lambda (Node.js 24) ]
-                              │
-                              ▼
-                     [ Amazon DynamoDB ]
-```
+1.  Inicia sesión en GitHub.
+2.  Abre el repositorio del instructor:\
+    https://github.com/Eduardo98598/CloudStore-Serverless
+3.  Selecciona **Fork** y después **Create fork**.
+4.  Entra al Fork que se creó en tu cuenta.
+5.  Selecciona **Code**, copia la URL HTTPS y clona tu copia.
 
-### Contrato de Respuesta Unificado
-Tanto el modo simulado como las llamadas reales a AWS API Gateway devuelven exactamente la misma estructura de Promesa:
+Ejemplo:
 
-```json
-{
-  "success": true,
-  "data": { ... },
-  "message": "Operación completada exitosamente",
-  "error": null
-}
+``` powershell
+git clone https://github.com/TU-USUARIO/CloudStore-Serverless.git
+cd CloudStore-Serverless
 ```
 
-Gracias a este diseño, **ninguna página HTML realiza llamadas `fetch` directamente**, lo que garantiza que la migración a AWS no requerirá reescribir la lógica de presentación.
+Crea una rama para tu equipo. Sustituye `equipo-01` por el identificador
+asignado:
 
----
-
-## 🛠️ 4. Instrucciones para Ejecución Local
-
-### Paso 1: Clonar o situarse en el repositorio
-Abre una terminal en el directorio raíz del proyecto:
-```bash
-cd "d:\Taller 2026\CloudStore-Serverless"
+``` powershell
+git switch -c equipo-01
 ```
 
-### Paso 2: Iniciar el servidor local
-El proyecto incluye un servidor nativo Node.js sin dependencias pesadas:
-```bash
+Comprueba la rama activa:
+
+``` powershell
+git branch
+```
+
+### Guardar y publicar tus cambios
+
+Después de modificar el proyecto:
+
+``` powershell
+git add .
+git commit -m "Personalizacion inicial del equipo 01"
+git push -u origin equipo-01
+```
+
+Para publicar cambios posteriores en esa misma rama:
+
+``` powershell
+git add .
+git commit -m "Descripcion de los cambios"
+git push
+```
+
+Cada equipo trabaja en su propio Fork. Para entregar el trabajo al
+instructor, puede abrir un **Pull Request** desde su rama hacia el
+repositorio original, siguiendo las indicaciones del taller.
+
+## 6. Ejecutar el proyecto localmente
+
+### Requisitos previos
+
+Comprueba que Node.js y npm estén instalados:
+
+``` powershell
+node -v
+npm -v
+```
+
+### Iniciar el servidor
+
+Desde la carpeta raíz del proyecto:
+
+``` powershell
 npm start
 ```
-*También puedes ejecutar `node server.js` directamente.*
 
-### Paso 3: Abrir en el navegador
-Visita en tu navegador:
-- **Tienda Pública:** [http://localhost:3000](http://localhost:3000)
-- **Panel Administrativo:** [http://localhost:3000/admin/index.html](http://localhost:3000/admin/index.html)
+También puedes iniciar el servidor directamente:
 
----
+``` powershell
+node server.js
+```
 
-## ✨ 5. Funcionalidades Implementadas
+Abre estas direcciones en el navegador:
 
-### Tienda Pública
-1. **Página de Inicio (`index.html`):**
-   - Hero banner moderno con llamado a la acción.
-   - Categorías destacadas dinámicas con conteo de productos.
-   - Cuadrícula de productos destacados con insignias de descuento y estrellas de calificación.
-   - Insignias de garantía, envío gratuito y soporte por WhatsApp.
+-   Tienda pública: http://localhost:3000
+-   Panel administrativo: http://localhost:3000/admin/index.html
 
-2. **Catálogo Tecnológico (`catalog.html`):**
-   - Filtro por categorías con selector interactivo y contador de existencias.
-   - Búsqueda en tiempo real por texto (nombre, descripción, categoría).
-   - Ordenamiento por precio (ascendente / descendente), nombre alfabético o más recientes.
-   - Estado vacío cuando no hay coincidencias con botón para restablecer filtros.
+Detén el servidor con `Ctrl + C`.
 
-3. **Detalle de Producto (`product.html`):**
-   - Vista detallada con imagen en alta resolución y control de error en carga.
-   - Precios con cálculo de porcentaje de ahorro.
-   - Indicador de stock dinámico ("Agotado", "¡Últimas X unidades!", "Disponible").
-   - Lista estructurada de especificaciones técnicas.
-   - Selector interactivo de cantidad respetando el límite de inventario.
-   - Botón directo "Consultar por WhatsApp" con mensaje pre-rellenado del SKU.
-   - Sección de productos relacionados de la misma categoría.
+## 7. Configurar el frontend para utilizar AWS
 
-4. **Carrito de Compras (`cart.html`):**
-   - Persistencia local entre recargas y navegación entre páginas.
-   - Modificación dinámica de cantidades con control de stock.
-   - Eliminación individual de productos y botón para vaciar el carrito completo.
-   - Cálculo automático de subtotal, costo de envío ($20 o ¡Gratis! en compras $\ge \$500$) y total.
-   - Contador en tiempo real en la barra de navegación.
+El proyecto permite alternar entre el modo de datos simulados y la API
+real. La configuración del frontend se encuentra en:
 
-5. **Finalizar Pedido (`checkout.html`):**
-   - Formulario de datos: Nombre completo, Teléfono WhatsApp, Correo electrónico, Dirección detallada y Observaciones.
-   - Validaciones de formulario (Bootstrap + JS).
-   - Resumen lateral con desglose de artículos y montos.
-   - Generación de consecutivo amigable (Ej. `CS-2026-1006`).
+``` text
+frontend/js/config.js
+```
 
-6. **Confirmación de Pedido (`order-success.html`):**
-   - Folio único de orden generado.
-   - **Integración con WhatsApp:** Botón que abre directamente la aplicación de WhatsApp con el resumen formateado (cliente, dirección, lista de artículos con subtotales, envío y total a pagar).
-   - Opción para copiar resumen al portapapeles.
-   - Vista de impresión limpia optimizada mediante CSS `@media print`.
+Para trabajar con datos simulados durante el desarrollo local, utiliza
+el modo Mock. Para conectarte a AWS, configura el modo real y la URL
+base de la API.
 
-### Panel Administrativo
-1. **Dashboard (`admin/index.html`):**
-   - Indicadores KPI: Ventas Totales registradas, Total de Pedidos, Catálogo de Productos y Alertas de Stock Bajo.
-   - Tabla de pedidos recientes con insignias de estado.
-   - Lista de alerta para productos con inventario crítico ($\le 5$ unidades).
-   - Botón de reinicio rápido de datos semilla.
+Ejemplo conceptual de configuración:
 
-2. **Administración de Productos (`admin/products.html`):**
-   - Listado tabular completo con imágenes, categorías, precios y existencias.
-   - Interruptores switch para activar/desactivar productos en tiempo real.
-   - Búsqueda y filtrado por categoría y estado de visibilidad.
-   - Acceso a edición y eliminación con modal de confirmación seguro.
+``` javascript
+const CONFIG = {
+  USE_MOCK_API: false,
+  API_BASE_URL: 'https://TU-API-ID.execute-api.mx-central-1.amazonaws.com'
+};
+```
 
-3. **Creación y Edición de Productos (`admin/product-form.html`):**
-   - Modo dual: Crear nuevo producto o editar producto existente vía parámetro `?id=...`.
-   - Selector dinámico de categorías.
-   - Previsualización en vivo de la imagen por URL.
-   - Campos de precio, precio comparado y stock.
-   - Área de texto para especificaciones por línea.
-   - Switches para visibilidad ("Activo") y destacado ("Home").
+**Importante:** conserva las demás propiedades que ya existan en el
+objeto `CONFIG`; modifica únicamente los valores correspondientes. La
+URL debe ser la de la API asignada a tu equipo o la que indique el
+instructor. No agregues `/prod`: la API de referencia utiliza la etapa
+`$default`.
 
-4. **Gestión de Categorías (`admin/categories.html`):**
-   - CRUD completo de categorías de catálogo.
-   - Modal interactivo con generador automático de slug y previsualización de icono Bootstrap.
-   - Validación de seguridad: impide eliminar una categoría si contiene productos asociados.
+## 8. Endpoints de la API de referencia
 
-5. **Gestión de Pedidos (`admin/orders.html`):**
-   - Tabla con todos los pedidos, cliente, fecha, total y estado.
-   - Filtro por estado: `pendiente`, `confirmado`, `enviado` y `cancelado`.
-   - Botón directo para iniciar conversación por WhatsApp con el comprador.
+La API HTTP desplegada por el instructor expone las siguientes rutas:
 
-6. **Detalle de Pedido (`admin/order-detail.html`):**
-   - Información completa del destinatario y notas de entrega.
-   - Desglose detallado de productos y totales.
-   - Formulario para actualizar el estado del pedido y asignar número de guía/tracking.
-   - Botón de contacto directo con el cliente vía WhatsApp.
+  -----------------------------------------------------------------------
+  Método                  Ruta                    Operación
+  ----------------------- ----------------------- -----------------------
+  GET                     `/products`             Consultar productos.
 
----
+  GET                     `/products/{id}`        Consultar un producto
+                                                  por ID.
 
-## ☁️ 6. Preparación para la Arquitectura Serverless en AWS
+  POST                    `/products`             Crear un producto.
 
-El proyecto está diseñado para conectarse a los siguientes servicios de AWS:
+  PUT                     `/products/{id}`        Actualizar un producto.
 
-| Servicio AWS | Propósito en CloudStore |
-|---|---|
-| **Amazon S3** | Alojamiento estático del frontend (`frontend/`) y almacenamiento de imágenes de productos. |
-| **Amazon CloudFront** | CDN global con HTTPS, compresión gzip/brotli y baja latencia. |
-| **Amazon API Gateway** | HTTP API para enrutar los endpoints REST hacia las funciones Lambda. |
-| **AWS Lambda (Node.js 24)** | Microservicios de backend para Productos, Categorías, Pedidos y Métricas. |
-| **Amazon DynamoDB** | Base de datos NoSQL con tablas `cloudstore-products`, `cloudstore-categories` y `cloudstore-orders`. |
-| **Amazon CloudWatch** | Registro de logs y métricas de ejecución de las funciones Lambda. |
+  DELETE                  `/products/{id}`        Desactivar/eliminar
+                                                  lógicamente un
+                                                  producto.
 
-### Pasos para Conectar a AWS (Producción):
-1. Desplegar los microservicios en **AWS Lambda** y crear la **HTTP API en Amazon API Gateway**.
-2. Abrir el archivo `frontend/js/config.js`.
-3. Modificar:
-   ```javascript
-   const CONFIG = {
-     USE_MOCK_API: false, // Conmutar a modo real
-     API_BASE_URL: 'https://tu-api-id.execute-api.us-east-1.amazonaws.com/prod',
-     WHATSAPP_PHONE: '5219991234567',
-     ...
-   };
-   ```
-4. Subir la carpeta `frontend/` al bucket de **Amazon S3** e invalidar la caché de **Amazon CloudFront**.
+  GET                     `/categories`           Consultar categorías.
 
-### Especificación de Endpoints REST requeridos para AWS Lambda:
-- `GET /products` — Lista productos activos (soporta query params `categoryId`, `search`, `sort`, `onlyFeatured`).
-- `GET /products/:id` — Detalle de un producto por ID.
-- `GET /admin/products` — Lista todos los productos para el panel admin.
-- `POST /admin/products` — Crea un nuevo producto.
-- `PUT /admin/products/:id` — Actualiza un producto existente.
-- `DELETE /admin/products/:id` — Elimina un producto.
-- `GET /categories` — Lista las categorías y conteo de productos.
-- `POST /admin/categories` — Crea una categoría.
-- `PUT /admin/categories/:id` — Actualiza una categoría.
-- `DELETE /admin/categories/:id` — Elimina una categoría si no tiene productos asociados.
-- `GET /admin/orders` — Consulta lista de pedidos con filtros de búsqueda y estado.
-- `GET /orders/:id` — Consulta detalle de un pedido.
-- `POST /orders` — Registra un nuevo pedido y descuenta existencias en DynamoDB.
-- `PATCH /admin/orders/:id/status` — Actualiza el estado de la orden (`pendiente`, `confirmado`, `enviado`, `cancelado`).
-- `GET /admin/dashboard/metrics` — Retorna totales calculados de ventas, pedidos, inventario crítico y productos.
+  POST                    `/categories`           Crear una categoría.
 
----
+  PUT                     `/categories/{id}`      Actualizar una
+                                                  categoría.
 
-## 📌 7. Pendientes para Etapas Posteriores
+  DELETE                  `/categories/{id}`      Desactivar/eliminar
+                                                  lógicamente una
+                                                  categoría.
 
-- [ ] Implementación de autenticación y autorización con **Amazon Cognito** (User Pools & Identity Pools) para proteger las rutas del panel administrativo `/admin/*`.
-- [ ] Implementación de la infraestructura como código (**AWS SAM**, **CDK** o **Terraform**) para el backend serverless.
-- [ ] Subida de imágenes directa a **Amazon S3** mediante URLs prefirmadas (*Presigned URLs*).
-- [ ] Integración opcional de pasarela de pago (ej. Stripe o Mercado Pago vía webhook en AWS Lambda).
+  GET                     `/orders`               Consultar pedidos.
+
+  GET                     `/orders/{id}`          Consultar un pedido por
+                                                  ID.
+
+  POST                    `/orders`               Registrar un pedido.
+
+  PATCH                   `/orders/{id}/status`   Actualizar el estado de
+                                                  un pedido.
+
+  GET                     `/dashboard/metrics`    Consultar métricas del
+                                                  dashboard.
+  -----------------------------------------------------------------------
+
+La definición detallada de parámetros, cuerpos de solicitud y respuestas
+está en `API-CONTRACT.md`. No sustituyas estas rutas por rutas
+`/admin/...`: esas rutas no corresponden a la API desplegada del taller.
+
+## 9. Personalizar la tienda
+
+Cada equipo deberá adaptar la identidad visual y el contenido de su
+tienda. La guía principal es:
+
+``` text
+PERSONALIZAR-TIENDA.md
+```
+
+Como mínimo, revisa:
+
+-   Nombre y descripción de la tienda.
+-   Logotipo, favicon y banner.
+-   Colores y tema visual.
+-   Categorías y productos.
+-   Imágenes y textos del catálogo.
+-   Datos de contacto y configuración de WhatsApp, si aplica.
+
+No modifiques las rutas de la API ni la lógica de pedidos sin
+autorización del instructor. La personalización debe conservar el
+contrato de comunicación entre frontend y backend.
+
+## 10. Despliegue del frontend en S3 y CloudFront
+
+El frontend estático está preparado para alojarse en Amazon S3 y
+distribuirse mediante Amazon CloudFront. El flujo general es:
+
+1.  Crear un bucket S3 para el sitio del equipo.
+2.  Publicar el contenido de la carpeta `frontend/`.
+3.  Configurar CloudFront para distribuir el contenido del bucket.
+4.  Configurar el acceso seguro al origen S3.
+5.  Probar la tienda desde la URL de CloudFront.
+6.  Invalidar la caché de CloudFront cuando sea necesario publicar
+    cambios.
+
+Los nombres de recursos deben ser únicos por equipo. Sigue la
+demostración y las indicaciones del instructor antes de crear recursos
+para evitar colisiones o costos innecesarios.
+
+## 11. Seguridad y costos: consideraciones del laboratorio
+
+-   Nunca subas claves de acceso, contraseñas, archivos `.env` con
+    secretos ni credenciales de AWS a GitHub.
+-   No incluyas claves de AWS en el código JavaScript del navegador.
+-   El panel administrativo de esta versión es demostrativo y **no
+    cuenta con autenticación ni autorización de administrador**. No lo
+    expongas como un sistema de producción.
+-   CORS no sustituye la autenticación ni protege por sí solo las
+    operaciones.
+-   Utiliza únicamente los recursos y permisos indicados por el
+    instructor.
+-   Revisa los recursos creados y elimina los que ya no se utilicen al
+    finalizar el taller.
+-   AWS puede generar cargos por servicios, almacenamiento, solicitudes
+    y transferencia de datos. Consulta la consola de facturación y los
+    límites de tu cuenta.
+
+## 12. Documentación adicional
+
+-   `API-CONTRACT.md`: rutas y contrato de comunicación de la API.
+-   `DYNAMODB-DESIGN.md`: tablas, claves e índices de DynamoDB.
+-   `PERSONALIZAR-TIENDA.md`: instrucciones para adaptar la tienda.
+-   `docs/aws-architecture.md`: arquitectura de la solución.
+-   `docs/dynamodb-schemas.md`: esquemas de datos.
+-   `docs/openapi.yaml`: especificación OpenAPI.
+
+------------------------------------------------------------------------
+
+**CloudStore Serverless --- Proyecto educativo para el taller de
+desarrollo de aplicaciones con AWS.**
