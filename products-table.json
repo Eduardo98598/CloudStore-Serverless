@@ -1,0 +1,66 @@
+{
+  "TableName": "CloudStore-Products",
+  "AttributeDefinitions": [
+    {
+      "AttributeName": "id",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "productStatus",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "createdAt",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "categoryId",
+      "AttributeType": "S"
+    },
+    {
+      "AttributeName": "categorySort",
+      "AttributeType": "S"
+    }
+  ],
+  "KeySchema": [
+    {
+      "AttributeName": "id",
+      "KeyType": "HASH"
+    }
+  ],
+  "BillingMode": "PAY_PER_REQUEST",
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "StatusIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "productStatus",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "createdAt",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    },
+    {
+      "IndexName": "CategoryIndex",
+      "KeySchema": [
+        {
+          "AttributeName": "categoryId",
+          "KeyType": "HASH"
+        },
+        {
+          "AttributeName": "categorySort",
+          "KeyType": "RANGE"
+        }
+      ],
+      "Projection": {
+        "ProjectionType": "ALL"
+      }
+    }
+  ]
+}

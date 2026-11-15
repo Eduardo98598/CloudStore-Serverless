@@ -17,5 +17,9 @@
     "node24"
   ],
   "author": "CloudStore Team",
-  "license": "MIT"
+  "license": "MIT",
+  "dependencies": {
+    "@aws-sdk/client-dynamodb": "^3.1169.0",
+    "@aws-sdk/lib-dynamodb": "^3.1169.0"
+  }
 }

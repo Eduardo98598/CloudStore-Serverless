@@ -15,10 +15,10 @@ const CONFIG = {
   // ========================================================
   // Conmutador Serverless AWS / Mock API
   // ========================================================
-  USE_MOCK_API: true,
+  USE_MOCK_API: false,
   
   // URL base de Amazon API Gateway (Ejemplo: https://xyz123.execute-api.us-east-1.amazonaws.com/prod)
-  API_BASE_URL: '',
+  API_BASE_URL: 'http://localhost:4000',//
   
   // Configuración de WhatsApp para pedidos (sincronizada con frontend/config/store.config.js)
   // Número con código de país (ejemplo: 5219991234567 para México)

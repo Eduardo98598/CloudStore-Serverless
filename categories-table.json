@@ -1,0 +1,20 @@
+{
+  "TableName": "CloudStore-Categories",
+  "AttributeDefinitions": [
+    { "AttributeName": "id", "AttributeType": "S" },
+    { "AttributeName": "categoryStatus", "AttributeType": "S" },
+    { "AttributeName": "name", "AttributeType": "S" }
+  ],
+  "KeySchema": [{ "AttributeName": "id", "KeyType": "HASH" }],
+  "BillingMode": "PAY_PER_REQUEST",
+  "GlobalSecondaryIndexes": [
+    {
+      "IndexName": "StatusIndex",
+      "KeySchema": [
+        { "AttributeName": "categoryStatus", "KeyType": "HASH" },
+        { "AttributeName": "name", "KeyType": "RANGE" }
+      ],
+      "Projection": { "ProjectionType": "ALL" }
+    }
+  ]
+}
