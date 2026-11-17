@@ -13,6 +13,7 @@ node_modules/
 credentials
 
 # Paquetes y archivos generados
+lambda-dist/
 backend/dist/
 *.zip
 
