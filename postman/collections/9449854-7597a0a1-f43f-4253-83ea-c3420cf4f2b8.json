@@ -1,0 +1,381 @@
+{
+	"info": {
+		"_postman_id": "9449854-7597a0a1-f43f-4253-83ea-c3420cf4f2b8",
+		"name": "API documentation",
+		"description": "# 📄 Get started here\n\nThis template contains a boilerplate for documentation that you can quickly customize and reuse.\n\n## 🔖 How to use this template\n\n- Replace the content given brackets (()) with your API's details.\n    \n- Tips are formatted in `codespan` - feel free to read and remove them.\n    \n\n---\n\n`Start with a brief overview of what your API offers.`\n\nThe ((product name)) provides many API products, tools, and resources that enable you to ((add product value here)).\n\n`You can also list the APIs you offer, link to the relevant pages, or do both in this section.`\n\n## **Getting started guide**\n\n`List the steps or points required to start using your APIs. Make sure to cover everything required to reach success with your API as quickly as possible.`\n\nTo start using the ((add APIs here)), you need to -\n\n`The points given below are from The Postman API's documentation. You can reference it to write your own getting started guide.`\n\n- You must use a valid API Key to send requests to the API endpoints. You can get your API key from Postman's [integrations dashboard](https://go.postman.co/settings/me/api-keys).\n    \n- The API has [rate and usage limits](https://learning.postman.com/docs/developer/postman-api/postman-api-rate-limits/).\n    \n- The API only responds to HTTPS-secured communications. Any requests sent via HTTP return an HTTP 301 redirect to the corresponding HTTPS resources.\n    \n- The API returns request responses in JSON format. When an API request returns an error, it is sent in the JSON response as an error key.\n    \n\n## Authentication\n\n`Add details on the authorization keys/tokens required, steps that cover how to get them, and the relevant error codes.`\n\nThe ((product name)) API uses ((add your API's authorization type)) for authentication.\n\n`The details given below are from the Postman API's documentation. You can reference it to write your own authentication section.`\n\nPostman uses API keys for authentication. You can generate a Postman API key in the [API keys](https://postman.postman.co/settings/me/api-keys) section of your Postman account settings.\n\nYou must include an API key in each request to the Postman API with the X-Api-Key request header.\n\n### Authentication error response\n\nIf an API key is missing, malformed, or invalid, you will receive an HTTP 401 Unauthorized response code.\n\n## Rate and usage limits\n\n`Use this section to cover your APIs' terms of use. Include API limits, constraints, and relevant error codes, so consumers understand the permitted API usage and practices.`\n\n`The example given below is from The Postman API's documentation. Use it as a reference to write your APIs' terms of use.`\n\nAPI access rate limits apply at a per-API key basis in unit time. The limit is 300 requests per minute. Also, depending on your plan, you may have usage limits. If you exceed either limit, your request will return an HTTP 429 Too Many Requests status code.\n\nEach API response returns the following set of headers to help you identify your use status:\n\n| Header | Description |\n| --- | --- |\n| `X-RateLimit-Limit` | The maximum number of requests that the consumer is permitted to make per minute. |\n| `X-RateLimit-Remaining` | The number of requests remaining in the current rate limit window. |\n| `X-RateLimit-Reset` | The time at which the current rate limit window resets in UTC epoch seconds. |\n\n### 503 response\n\nAn HTTP `503` response from our servers indicates there is an unexpected spike in API access traffic. The server is usually operational within the next five minutes. If the outage persists or you receive any other form of an HTTP `5XX` error, [contact support](https://support.postman.com/hc/en-us/requests/new/).\n\n### **Need some help?**\n\n`Add links that customers can refer to whenever they need help.`\n\nIn case you have questions, go through our tutorials ((link to your video or help documentation here)). Or visit our FAQ page ((link to the relevant page)).\n\nOr you can check out our community forum, there’s a good chance our community has an answer for you. Visit our developer forum ((link to developer forum)) to review topics, ask questions, and learn from others.\n\n`You can also document or add links to libraries, code examples, and other resources needed to make a request.`",
+		"schema": "https://schema.getpostman.com/json/collection/v2.1.0/collection.json"
+	},
+	"item": [
+		{
+			"name": "Categorias",
+			"item": [
+				{
+					"name": "GetCategories",
+					"id": "9449854-bc635e4d-dfd6-4995-9326-d836c4f34c3f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}categories",
+							"host": [
+								"{{baseUrlAwsLocal}}categories"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostCategories",
+					"id": "9449854-9f72c655-b326-4141-9ace-29dd5198d1ef",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\" : \"Electronica\",\r\n    \"description\" : \"Categoria de prueba sin acentos\",\r\n    \"icon\" : \"bi-cpu\",\r\n    \"active\" : true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}categories",
+							"host": [
+								"{{baseUrlAwsLocal}}categories"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "9449854-ddcb1b9f-7255-451c-ace3-16d88db91c10"
+		},
+		{
+			"name": "Productos",
+			"item": [
+				{
+					"name": "GetProducts",
+					"id": "9449854-897389c2-59ec-46e3-97c0-39730fbfa281",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}products",
+							"host": [
+								"{{baseUrlAwsLocal}}products"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductsByCategory",
+					"id": "9449854-e361bf35-3595-4c57-b40e-de46893ddee1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}categories?categoryId={{categoryId}}",
+							"host": [
+								"{{baseUrlAwsLocal}}categories"
+							],
+							"query": [
+								{
+									"key": "categoryId",
+									"value": "{{categoryId}}"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductsByStatus",
+					"id": "9449854-bbc54e9b-f768-4924-86d7-f7a8a88c87b9",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}products?status=confirmado",
+							"host": [
+								"{{baseUrlAwsLocal}}products"
+							],
+							"query": [
+								{
+									"key": "status",
+									"value": "confirmado"
+								}
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "GetProductsById",
+					"id": "9449854-d3784e35-7a08-4070-91cb-8813378b0f8f",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}products/{{productId}}",
+							"host": [
+								"{{baseUrlAwsLocal}}products"
+							],
+							"path": [
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "DeleteProducts",
+					"id": "9449854-54a8c823-4851-4822-bed8-729c7351e785",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "DELETE",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}products/{{productId}}",
+							"host": [
+								"{{baseUrlAwsLocal}}products"
+							],
+							"path": [
+								"{{productId}}"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostProducts",
+					"id": "9449854-69199b13-86dd-4321-b2ab-3626b95faea1",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "POST",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"name\": \"Mouse Logitech G305\",\r\n    \"description\": \"Wireless mouse for CloudStore order test\",\r\n    \"price\": 799,\r\n    \"stock\": 15,\r\n    \"categoryId\": \"cat-electronica\",\r\n    \"categoryName\": \"Electronica\",\r\n    \"image\": \"https://resource.logitech.com/c_fill,q_auto,f_auto,dpr_1.0/d_transparent.gif/content/dam/logitech/en/products/mice/m196/gallery/m196-graphite-topview-gallery1.png\",\r\n    \"featured\": true,\r\n    \"active\": true\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}products",
+							"host": [
+								"{{baseUrlAwsLocal}}products"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "9449854-4e0414cc-b7a2-4d81-83c3-09dcca164006"
+		},
+		{
+			"name": "Ordenes",
+			"item": [
+				{
+					"name": "GetOrders",
+					"id": "9449854-e74f3a7a-abbf-4d9c-bee5-d4eb72c55d2d",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}orders",
+							"host": [
+								"{{baseUrlAwsLocal}}orders"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PatchOrderStatus",
+					"id": "9449854-780e33c2-6573-4e9e-b928-eb855c97e846",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "PATCH",
+						"header": [],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"status\": \"confirmado\"\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}orders/{{orderId}}/status",
+							"host": [
+								"{{baseUrlAwsLocal}}orders"
+							],
+							"path": [
+								"{{orderId}}",
+								"status"
+							]
+						}
+					},
+					"response": []
+				},
+				{
+					"name": "PostOrders",
+					"id": "9449854-f102bbe6-06fa-4045-9865-b2afce13d2ca",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"auth": {
+							"type": "noauth"
+						},
+						"method": "POST",
+						"header": [
+							{
+								"key": "Idempotency-Key",
+								"value": "{{idempotencyKeyOrders}}",
+								"type": "text"
+							}
+						],
+						"body": {
+							"mode": "raw",
+							"raw": "{\r\n    \"customer\": {\r\n        \"name\": \"Cliente de prueba\",\r\n        \"phone\": \"9991234567\",\r\n        \"address\": \"Calle 123, Merida\"\r\n    },\r\n    \"items\": [\r\n        {\r\n            \"productId\": \"{{productId}}\",\r\n            \"quantity\": 1,\r\n            \"price\": 799\r\n        }\r\n    ]\r\n}",
+							"options": {
+								"raw": {
+									"language": "json"
+								}
+							}
+						},
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}orders",
+							"host": [
+								"{{baseUrlAwsLocal}}orders"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "9449854-de5ee919-f40c-42de-8123-50d2bd45c8ed"
+		},
+		{
+			"name": "Dashboard",
+			"item": [
+				{
+					"name": "GetMetrics",
+					"id": "9449854-165a32f5-e310-4bd1-944b-8c7035b61885",
+					"protocolProfileBehavior": {
+						"disableBodyPruning": true
+					},
+					"request": {
+						"method": "GET",
+						"header": [],
+						"url": {
+							"raw": "{{baseUrlAwsLocal}}dashboard/metrics",
+							"host": [
+								"{{baseUrlAwsLocal}}dashboard"
+							],
+							"path": [
+								"metrics"
+							]
+						}
+					},
+					"response": []
+				}
+			],
+			"id": "9449854-14e71ca5-3b53-4fa0-a68a-161e303ff5df"
+		}
+	],
+	"auth": {
+		"type": "apikey",
+		"apikey": [
+			{
+				"key": "key",
+				"value": "X-API-Key",
+				"type": "string"
+			},
+			{
+				"key": "value",
+				"value": "{{token}}",
+				"type": "string"
+			}
+		]
+	},
+	"event": [
+		{
+			"listen": "prerequest",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		},
+		{
+			"listen": "test",
+			"script": {
+				"type": "text/javascript",
+				"exec": [
+					""
+				]
+			}
+		}
+	],
+	"variable": [
+		{
+			"key": "baseUrl",
+			"value": "https://farming-simulator.pstmn.io"
+		},
+		{
+			"key": "productId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "categoryId",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "idempotencyKeyOrders",
+			"value": "",
+			"type": "default"
+		},
+		{
+			"key": "orderId",
+			"value": "",
+			"type": "default"
+		}
+	]
+}
