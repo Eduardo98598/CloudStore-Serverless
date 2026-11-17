@@ -88,9 +88,9 @@
 						"method": "GET",
 						"header": [],
 						"url": {
-							"raw": "{{baseUrlAwsLocal}}categories?categoryId={{categoryId}}",
+							"raw": "{{baseUrlAwsLocal}}products?categoryId={{categoryId}}",
 							"host": [
-								"{{baseUrlAwsLocal}}categories"
+								"{{baseUrlAwsLocal}}products"
 							],
 							"query": [
 								{
