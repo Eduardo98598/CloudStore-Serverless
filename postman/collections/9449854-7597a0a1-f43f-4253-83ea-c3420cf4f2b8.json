@@ -317,26 +317,13 @@
 			"id": "9449854-14e71ca5-3b53-4fa0-a68a-161e303ff5df"
 		}
 	],
-	"auth": {
-		"type": "apikey",
-		"apikey": [
-			{
-				"key": "key",
-				"value": "X-API-Key",
-				"type": "string"
-			},
-			{
-				"key": "value",
-				"value": "{{token}}",
-				"type": "string"
-			}
-		]
-	},
 	"event": [
 		{
 			"listen": "prerequest",
 			"script": {
+				"id": "ca11c8ea-6e95-4faf-9299-9e2b34b888e3",
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -345,7 +332,9 @@
 		{
 			"listen": "test",
 			"script": {
+				"id": "09e366d3-7097-4fb5-8cfc-933df81f3e39",
 				"type": "text/javascript",
+				"requests": {},
 				"exec": [
 					""
 				]
@@ -359,23 +348,19 @@
 		},
 		{
 			"key": "productId",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "categoryId",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "idempotencyKeyOrders",
-			"value": "",
-			"type": "default"
+			"value": ""
 		},
 		{
 			"key": "orderId",
-			"value": "",
-			"type": "default"
+			"value": ""
 		}
 	]
 }
